@@ -5,6 +5,8 @@ import com.politrons.model.{FileInfo, Rank}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfterAll, FeatureSpec, GivenWhenThen}
 
+import scala.util.Try
+
 class SearchServiceSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfterAll with MockFactory {
 
   feature(" Search Service") {
@@ -14,7 +16,7 @@ class SearchServiceSpec extends FeatureSpec with GivenWhenThen with BeforeAndAft
       Given("a search engine with one hello world file loaded")
       val mockEngine = mock[SearchEngine]
 
-      val list = List((FileInfo("foo.txt", Map()), Rank(100)))
+      val list = Try(List((FileInfo("foo.txt", Map()), Rank(100))))
       (mockEngine.search _).expects("hello world").returning(list).once()
 
       val service = SearchService(mockEngine)
@@ -29,7 +31,7 @@ class SearchServiceSpec extends FeatureSpec with GivenWhenThen with BeforeAndAft
       Given("a search engine with one hello world file loaded")
       val mockEngine = mock[SearchEngine]
 
-      val list = List(
+      val tryList = Try(List(
         (FileInfo("foo1.txt", Map()), Rank(100)),
         (FileInfo("foo2.txt", Map()), Rank(99)),
         (FileInfo("foo3.txt", Map()), Rank(98)),
@@ -45,8 +47,8 @@ class SearchServiceSpec extends FeatureSpec with GivenWhenThen with BeforeAndAft
         (FileInfo("foo13.txt", Map()), Rank(88)),
         (FileInfo("foo14.txt", Map()), Rank(87)),
         (FileInfo("foo15.txt", Map()), Rank(86)),
-      )
-      (mockEngine.search _).expects("hello world").returning(list).once()
+      ))
+      (mockEngine.search _).expects("hello world").returning(tryList).once()
 
       val service = SearchService(mockEngine)
       When("I search for hello world sentence")

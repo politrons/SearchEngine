@@ -41,7 +41,9 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       When("I search for hello world sentence")
       val engine = SearchEngine(filesPath)
       Then("I receive the 100% rank top")
-      val infoFilesRank = engine.search("hello world")
+      val infoFilesRankTry = engine.search("hello world")
+      assert(infoFilesRankTry.isSuccess)
+      val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
       assert(infoFilesRank.head._2.value == 100)
       assert(infoFilesRank(1)._2.value == 50)
@@ -56,7 +58,9 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       When("I search for hello world sentence")
       val engine = SearchEngine(filesPath)
       Then("I receive the 50% rank top")
-      val infoFilesRank = engine.search("hello")
+      val infoFilesRankTry = engine.search("hello")
+      assert(infoFilesRankTry.isSuccess)
+      val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
       assert(infoFilesRank.head._2.value == 50)
       assert(infoFilesRank(1)._2.value == 50)
@@ -72,7 +76,9 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       When("I search for hello world sentence")
       val engine = SearchEngine(filesPath)
       Then("I receive the 50% rank top")
-      val infoFilesRank = engine.search("Muchas y muy graves historias he yo leído de caballeros andantes")
+      val infoFilesRankTry = engine.search("Muchas y muy graves historias he yo leído de caballeros andantes")
+      assert(infoFilesRankTry.isSuccess)
+      val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
       assert(infoFilesRank.head._2.value == 0.07340)
       assert(infoFilesRank(1)._2.value == 0)
@@ -88,7 +94,9 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       When("I search for hello world sentence")
       val engine = SearchEngine(filesPath)
       Then("I receive the 50% rank top")
-      val infoFilesRank = engine.search("hello world Muchas y muy graves historias he yo leído de caballeros andantes")
+      val infoFilesRankTry = engine.search("hello world Muchas y muy graves historias he yo leído de caballeros andantes")
+      assert(infoFilesRankTry.isSuccess)
+      val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
       assert(infoFilesRank.head._2.value == 100)
       assert(infoFilesRank(1)._2.value == 50)
