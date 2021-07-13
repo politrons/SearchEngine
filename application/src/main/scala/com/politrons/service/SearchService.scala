@@ -26,6 +26,7 @@ case class SearchService(searchEngine: SearchEngine) {
 
   /**
    * We transform the List[(FileInfo, Rank)] into the [StringBuffer] to be render by the app
+   * As functional requirement we only take the first ten files of the rank.
    *
    * @param infoFilesRank list of tuple FileInfo with the info of the file, and Rank with the
    *                      percentage of occurrence of the sentence in the files

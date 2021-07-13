@@ -4,8 +4,11 @@ import com.politrons.model.{FileInfo, Rank}
 
 import java.io.File
 import java.math.{MathContext, RoundingMode}
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.io.BufferedSource
-import scala.util.Try
+import scala.language.postfixOps
+import scala.util.{Failure, Success, Try}
 
 /**
  * Factory object to read the files in the passed directory, and create an instance of [SearchEngine]
@@ -20,8 +23,8 @@ object SearchEngine {
 
   /**
    * Using the directory we load all files from the file system, and we transform each
-   *  in a domain model [FileInfo] which contains the name of the file, and a map with the
-   *  words that are part of the file
+   * in a domain model [FileInfo] which contains the name of the file, and a map with the
+   * words that are part of the file
    */
   private def createFileInfoList(directory: String): List[FileInfo] = {
     getListOfFiles(directory).foldLeft(List[FileInfo]())((fileInfoList, file) => {
@@ -69,6 +72,8 @@ object SearchEngine {
 
 case class SearchEngine(files: List[FileInfo]) {
 
+  implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.global
+
   def search(sentence: String): Try[List[(FileInfo, Rank)]] =
     Try {
       files.foldLeft(List[(FileInfo, Rank)]())((acc, fileInfo) => {
@@ -81,14 +86,20 @@ case class SearchEngine(files: List[FileInfo]) {
   /**
    * Using the current [FileInfo] with all the information we iterate over the sentence,
    * and we search each word into the map of words of that file.
-   * Returning the number of words of the sentence that are in the file.
    * To make the process better in terms of performance, we can remove all duplicated words in the sentence.
+   * In order to make it more efficient, we run each word of the sentence to search in a future.
+   * Once we finish we gather the list of futures, and we pass into [Future.sequence] to flatten all results.
+   *
+   * We finally return the number of words of the sentence that are in the file.
    */
   private def findWordsInFile(fileInfo: FileInfo, sentence: String): Int = {
-    sentence.split("\\s+")
-      .map(text => text.replaceAll("\\W", ""))
-      .distinct
-      .count(word => fileInfo.words.contains(word))
+    val futuresCount: List[Future[Int]] =
+      sentence.split("\\s+")
+        .map(text => text.replaceAll("\\W", ""))
+        .distinct
+        .map(word => Future(if (fileInfo.words.contains(word)) 1 else 0))
+        .toList
+    Await.result(Future.sequence(futuresCount), 60 seconds).sum
   }
 
   /**
