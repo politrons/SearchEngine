@@ -80,11 +80,10 @@ case class SearchEngine(files: List[FileInfo]) {
     }
 
   /**
-   * Using the current [FileInfo] with all the information
-   *
-   * @param fileInfo
-   * @param sentence
-   * @return
+   * Using the current [FileInfo] with all the information we iterate over the sentence,
+   * and we search each word into the map of words of that file.
+   * Returning the number of words of the sentence that are in the file.
+   * To make the process better in terms of performance, we can remove all duplicated words in the sentence.
    */
   private def findWordsInFile(fileInfo: FileInfo, sentence: String): Int = {
     sentence.split("\\s+")
@@ -93,6 +92,11 @@ case class SearchEngine(files: List[FileInfo]) {
       .count(word => fileInfo.words.contains(word))
   }
 
+  /**
+   * Algorithm to create the Rank with the specific percentage of words found in the file.
+   * Since the number of words in the map are distinct, just like the ones in the sentence,
+   * we can ensure the calc making this [rule of three]
+   */
   private def createRank(wordsFounded: Int, totalWords: Int): Rank = {
     val totalRank: BigDecimal = (BigDecimal(wordsFounded * 100) / BigDecimal(totalWords))
       .round(new MathContext(4, RoundingMode.HALF_EVEN))
