@@ -1,7 +1,7 @@
 package com.politrons.app
 
 import com.politrons.engine.SearchEngine
-import com.politrons.model.FileInfo
+import com.politrons.model.{FileInfo, Rank}
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -25,7 +25,7 @@ object SearchApp {
     searchInput(searchEngine)
   }
 
-  private def printOutput(infoFilesRank: List[(FileInfo, SearchEngine.Rank)]): Unit = {
+  private def printOutput(infoFilesRank: List[(FileInfo, Rank)]): Unit = {
     infoFilesRank.foreach(infoFileRank => {
       println(s"${infoFileRank._1.name}:${infoFileRank._2.value}%")
     })

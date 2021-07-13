@@ -25,11 +25,11 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       assert(files.last.words.contains("hello"))
       assert(files.last.words.contains("world"))
       assert(!files.last.words.contains(","))
-      assert(files.last.words("hello") == 1)
+      assert(files.last.words("hello") == 2)
       assert(files.last.words("world") == 1)
 
       assert(files.head.words.size == 23)
-      assert(files.head.words("make") == 1)
+      assert(files.head.words("make") == 3)
 
     }
 

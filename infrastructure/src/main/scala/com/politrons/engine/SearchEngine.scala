@@ -1,10 +1,8 @@
 package com.politrons.engine
 
-import com.politrons.engine.SearchEngine.Rank
-import com.politrons.model.FileInfo
+import com.politrons.model.{FileInfo, Rank}
 
 import java.io.File
-import scala.::
 import scala.io.BufferedSource
 
 /**
@@ -32,7 +30,7 @@ object SearchEngine {
 
   private def createWordsCount(words: Array[String]): Map[String, Int] = {
     words.foldLeft(Map[String, Int]())((wordsCount, word) => {
-      wordsCount ++ Map(word -> (wordsCount.getOrElse(word, 1) + 1))
+      wordsCount ++ Map(word -> (wordsCount.getOrElse(word, 0) + 1))
     })
   }
 
@@ -45,7 +43,6 @@ object SearchEngine {
     }
   }
 
-  case class Rank(value: Int) extends AnyVal
 }
 
 case class SearchEngine(files: List[FileInfo]) {
