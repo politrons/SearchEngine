@@ -4,7 +4,6 @@ import com.politrons.model.{FileInfo, Rank}
 
 import java.io.File
 import java.math.{MathContext, RoundingMode}
-import scala.collection.immutable
 import scala.io.BufferedSource
 import scala.util.Try
 

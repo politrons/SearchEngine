@@ -20,7 +20,7 @@ case class SearchService(searchEngine: SearchEngine) {
       case Success(infoFilesRank) => generateOutput(infoFilesRank)
       case Failure(exception) =>
         println(s"Error in Search engine. Caused by ${exception}")
-        new StringBuffer(exception.getMessage)
+        new StringBuffer(s"Internal error. Caused by ${exception.getMessage}")
     }
   }
 
