@@ -87,7 +87,8 @@ case class SearchEngine(files: List[FileInfo]) {
    * Using the current [FileInfo] with all the information we iterate over the sentence,
    * and we search each word into the map of words of that file.
    * To make the process better in terms of performance, we can remove all duplicated words in the sentence.
-   * In order to make it more efficient, we run each word of the sentence to search in a future.
+   * Since we assume the number of words in sentence is limited, and in order to make it more efficient,
+   * we run each word of the sentence to search in a future.
    * Once we finish we gather the list of futures, and we pass into [Future.sequence] to flatten all results.
    *
    * We finally return the number of words of the sentence that are in the file.
