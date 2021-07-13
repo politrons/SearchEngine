@@ -21,6 +21,7 @@ lazy val domain = project
   .in(file("domain"))
   .settings(
     name := "domain",
+    assembly / test := (Test / test).value,
     commonSettings
   )
 
@@ -29,6 +30,7 @@ lazy val infrastructure = project
   .dependsOn(domain)
   .settings(
     name := "infrastructure",
+    assembly / test := (Test / test).value,
     commonSettings
   )
 
@@ -37,8 +39,19 @@ lazy val application = project
   .dependsOn(domain, infrastructure)
   .settings(
     name := "application",
+    assembly / test := (Test / test).value,
+    assembly / mainClass := Some("com.politrons.app.SearchApp"),
     commonSettings
   )
+
+
+//lazy val assemblySettings = Seq(
+//  assemblyJarName in assembly := name.value + ".jar",
+//  assemblyMergeStrategy in assembly := {
+//    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+//    case _                             => MergeStrategy.first
+//  }
+//)
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"

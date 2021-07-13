@@ -3,6 +3,7 @@ package com.politrons.engine
 import com.politrons.model.{FileInfo, Rank}
 
 import java.io.File
+import java.math.{MathContext, RoundingMode}
 import scala.io.BufferedSource
 
 /**
@@ -14,6 +15,7 @@ object SearchEngine {
   def apply(directory: String): SearchEngine = {
 
     val fileInfoList = getListOfFiles(directory).foldLeft(List[FileInfo]())((fileInfoList, file) => {
+      println(s"Loading file ${file.getName} in search engine.")
       val words = transformSourceIntoWordsArray(scala.io.Source.fromFile(file))
       FileInfo(file.getName, createWordsCount(words)) :: fileInfoList
     })
@@ -57,6 +59,7 @@ case class SearchEngine(files: List[FileInfo]) {
 
   /**
    * Using the current [FileInfo] with all the information
+   *
    * @param fileInfo
    * @param sentence
    * @return
@@ -69,7 +72,8 @@ case class SearchEngine(files: List[FileInfo]) {
   }
 
   private def createRank(wordsFounded: Int, totalWords: Int): Rank = {
-    val totalRank = wordsFounded * 100 / totalWords
+    val totalRank: BigDecimal = (BigDecimal(wordsFounded * 100) / BigDecimal(totalWords))
+      .round(new MathContext(4, RoundingMode.HALF_EVEN))
     Rank(if (totalRank > 100) 100 else totalRank)
   }
 }

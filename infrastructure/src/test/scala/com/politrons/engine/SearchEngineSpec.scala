@@ -18,7 +18,7 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       Then("I FileInfo list is loaded in memory filter and properly")
       val files = engine.files
       assert(files.nonEmpty)
-      assert(files.size == 3)
+      assert(files.size == 4)
 
       assert(files.last.name == "hello_world.txt")
       assert(files.last.words.size == 2)
@@ -42,7 +42,7 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       val engine = SearchEngine(filesPath)
       Then("I receive the 100% rank")
       val infoFilesRank = engine.search("hello world")
-      assert(infoFilesRank.size == 3)
+      assert(infoFilesRank.size == 4)
 
     }
   }
