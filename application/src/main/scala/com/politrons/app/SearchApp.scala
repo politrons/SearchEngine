@@ -32,7 +32,9 @@ object SearchApp {
   private def getInputSentence(service: SearchService): Unit = {
     println("========================================")
     print("Search>")
-    val output = service.searchInput(readLine())
+    val line = readLine()
+    if (line == ":quit") System.exit(0)
+    val output = service.searchInput(line)
     println(
       """
         | +-+-+-+-+-+ +-+-+-+-+

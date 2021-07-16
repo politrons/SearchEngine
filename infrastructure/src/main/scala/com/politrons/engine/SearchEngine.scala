@@ -8,7 +8,7 @@ import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.io.BufferedSource
 import scala.language.postfixOps
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 /**
  * Factory object to read the files in the passed directory, and create an instance of [SearchEngine]
@@ -77,9 +77,9 @@ case class SearchEngine(files: List[FileInfo]) {
   def search(sentence: String): Try[List[(FileInfo, Rank)]] =
     Try {
       files.foldLeft(List[(FileInfo, Rank)]())((acc, fileInfo) => {
-        val wordsFounded = findWordsInFile(fileInfo, sentence)
-        val totalWords = fileInfo.words.values.size
-        (fileInfo, createRank(wordsFounded, totalWords)) :: acc
+        val wordsSentence = sentence.split("\\s+")
+        val wordsFounded = findWordsInFile(fileInfo, wordsSentence)
+        (fileInfo, createRank(wordsFounded, wordsSentence.length)) :: acc
       }).sortWith(_._2.value > _._2.value)
     }
 
@@ -93,9 +93,9 @@ case class SearchEngine(files: List[FileInfo]) {
    *
    * We finally return the number of words of the sentence that are in the file.
    */
-  private def findWordsInFile(fileInfo: FileInfo, sentence: String): Int = {
+  private def findWordsInFile(fileInfo: FileInfo, wordsSentence: Array[String]): Int = {
     val futuresCount: List[Future[Int]] =
-      sentence.split("\\s+")
+      wordsSentence
         .map(text => text.replaceAll("\\W", ""))
         .distinct
         .map(word => Future(if (fileInfo.words.contains(word)) 1 else 0))
@@ -108,8 +108,8 @@ case class SearchEngine(files: List[FileInfo]) {
    * Since the number of words in the map are distinct, just like the ones in the sentence,
    * we can ensure the calc making this [rule of three]
    */
-  private def createRank(wordsFounded: Int, totalWords: Int): Rank = {
-    val totalRank: BigDecimal = (BigDecimal(wordsFounded * 100) / BigDecimal(totalWords))
+  private def createRank(wordsFounded: Int, sentenceLength: Int): Rank = {
+    val totalRank: BigDecimal = (BigDecimal(wordsFounded * 100) / BigDecimal(sentenceLength))
       .round(new MathContext(4, RoundingMode.HALF_EVEN))
     Rank(if (totalRank > 100) 100 else totalRank)
   }

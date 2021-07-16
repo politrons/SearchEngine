@@ -62,8 +62,8 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       assert(infoFilesRankTry.isSuccess)
       val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
-      assert(infoFilesRank.head._2.value == 50)
-      assert(infoFilesRank(1)._2.value == 50)
+      assert(infoFilesRank.head._2.value == 100)
+      assert(infoFilesRank(1)._2.value == 100)
       assert(infoFilesRank(2)._2.value == 0)
       assert(infoFilesRank(3)._2.value == 0)
     }
@@ -76,11 +76,11 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       When("I search for hello world sentence")
       val engine = SearchEngine(filesPath)
       Then("I receive the 50% rank top")
-      val infoFilesRankTry = engine.search("Muchas y muy graves historias he yo leído de caballeros andantes")
+      val infoFilesRankTry = engine.search("En un lugar de la Mancha, de cuyo nombre no quiero foo")
       assert(infoFilesRankTry.isSuccess)
       val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
-      assert(infoFilesRank.head._2.value == 0.07340)
+      assert(infoFilesRank.head._2.value == 83.33)
       assert(infoFilesRank(1)._2.value == 0)
       assert(infoFilesRank(2)._2.value == 0)
       assert(infoFilesRank(3)._2.value == 0)
@@ -94,14 +94,14 @@ class SearchEngineSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfte
       When("I search for hello world sentence")
       val engine = SearchEngine(filesPath)
       Then("I receive the 50% rank top")
-      val infoFilesRankTry = engine.search("hello world Muchas y muy graves historias he yo leído de caballeros andantes")
+      val infoFilesRankTry = engine.search("hello world Muchas y muy graves historias he yo leído de caballeros andantes Hey Jude")
       assert(infoFilesRankTry.isSuccess)
       val infoFilesRank = infoFilesRankTry.get
       assert(infoFilesRank.size == 4)
-      assert(infoFilesRank.head._2.value == 100)
-      assert(infoFilesRank(1)._2.value == 50)
-      assert(infoFilesRank(2)._2.value == 0.07340)
-      assert(infoFilesRank(3)._2.value == 0)
+      assert(infoFilesRank.head._2.value == 73.33)
+      assert(infoFilesRank(1)._2.value == 13.33)
+      assert(infoFilesRank(2)._2.value == 13.33)
+      assert(infoFilesRank(3)._2.value == 6.667)
     }
 
   }

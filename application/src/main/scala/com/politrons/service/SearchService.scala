@@ -36,8 +36,22 @@ case class SearchService(searchEngine: SearchEngine) {
     infoFilesRank
       .take(10)
       .foldLeft(new StringBuffer())((output, infoFileRank) => {
-        output.append(s"${infoFileRank._1.name}:${infoFileRank._2.value}%\n")
+        if (infoFileRank._2.value > 0) {
+          output.append(s"${infoFileRank._1.name}:${infoFileRank._2.value}%\n")
+        } else {
+          output
+        }
       })
+      .ifEmptyAddDefault()
   }
 
+  implicit class BufferExtension(buffer: StringBuffer) {
+    def ifEmptyAddDefault(): StringBuffer = {
+      if (buffer.length() == 0) {
+        buffer.append("no matches found")
+      } else {
+        buffer
+      }
+    }
+  }
 }

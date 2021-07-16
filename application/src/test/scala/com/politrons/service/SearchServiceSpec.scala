@@ -41,6 +41,21 @@ class SearchServiceSpec extends FeatureSpec with GivenWhenThen with BeforeAndAft
       assert(buffer.toString.contains("Woops"))
     }
 
+    scenario("search service receive and no match found response") {
+
+      Given("a search engine with one hello world file loaded")
+      val mockEngine = mock[SearchEngine]
+
+      val list = Try(List())
+      (mockEngine.search _).expects("hello world").returning(list).once()
+
+      val service = SearchService(mockEngine)
+      When("I search for hello world sentence")
+      val buffer = service.searchInput("hello world")
+      Then("I receive the output with no matches found")
+      assert(buffer.toString.contains("no matches found"))
+    }
+
     scenario("search service receive and return only 10 elements") {
 
       Given("a search engine with one hello world file loaded")
